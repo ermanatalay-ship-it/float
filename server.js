@@ -1,7 +1,6 @@
 /**
- * Realtime Floating Messages
- * Basit bir Express + Socket.IO uygulaması
- * Tüm ziyaretçiler gönderilen metinleri görür.
+ * Realtime Floating Messages - ACTIVE MESSAGE VERSION
+ * Only currently floating messages are sent to new visitors.
  */
 const express = require("express");
 const http = require("http");
@@ -32,10 +31,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000;
 
-// Son 50 mesaj hafızada tutulur (kalıcı depolama yok).
-const RECENT_LIMIT = 50;
-const recentMessages = [];
-
 /** Basit temizleyici: trim + uzunluk sınırı + kontrol karakterleri temizleme */
 function sanitizeText(input) {
   if (typeof input !== "string") return "";
@@ -47,10 +42,14 @@ function sanitizeText(input) {
   return txt;
 }
 
+// ACTIVE MESSAGE LOGIC
+const activeMessages = [];
+const MESSAGE_LIFETIME = 40000; // 40 saniye (animation duration)
+
 io.on("connection", (socket) => {
-  // Yeni bağlananlara son mesajları gönder
-  if (recentMessages.length) {
-    socket.emit("recent", recentMessages);
+  // Yeni bağlananlara sadece aktif (görünen) mesajları gönder
+  if (activeMessages.length) {
+    socket.emit("recent", activeMessages);
   }
 
   socket.on("newMessage", (raw) => {
@@ -63,14 +62,14 @@ io.on("connection", (socket) => {
       ts: Date.now()
     };
 
-    // Hafızaya ekle ve sınırı koru
-    recentMessages.push(message);
-    if (recentMessages.length > RECENT_LIMIT) {
-      recentMessages.splice(0, recentMessages.length - RECENT_LIMIT);
-    }
-
-    // Herkese yayınla
+    activeMessages.push(message);
     io.emit("broadcast", message);
+
+    // Mesajı X saniye sonra aktif listeden çıkar
+    setTimeout(() => {
+      const index = activeMessages.findIndex(m => m.id === message.id);
+      if (index !== -1) activeMessages.splice(index, 1);
+    }, MESSAGE_LIFETIME);
   });
 });
 
