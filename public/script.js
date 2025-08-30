@@ -19,15 +19,15 @@ function createMessageElement(text) {
         div.style.transform = `translateY(-${container.clientHeight}px)`;
     });
 
-    // 20 saniye sonra opacity ile kaybol
+    // 40 saniye sonra opacity ile kaybol (match CSS)
     setTimeout(() => {
         div.style.opacity = 0;
-    }, 20000);
+    }, 40000);
 
-    // 22 saniye sonra DOM'dan sil
+    // 42 saniye sonra DOM'dan sil
     setTimeout(() => {
         container.removeChild(div);
-    }, 22000);
+    }, 42000);
 }
 
 // Enter ile mesaj gönderme
@@ -39,12 +39,12 @@ input.addEventListener('keydown', (e) => {
     }
 });
 
-// --- FIXED: Listen for 'broadcast' instead of 'newMessage'
+// Dinle: 'broadcast' eventi ile yeni mesajlar
 socket.on('broadcast', (message) => {
     createMessageElement(message.text);
 });
 
-// --- OPTIONAL: Show recent messages when page loads
+// Dinle: 'recent' eventi ile geçmiş mesajlar (isteğe bağlı)
 socket.on('recent', (messages) => {
     messages.forEach(msg => createMessageElement(msg.text));
 });
