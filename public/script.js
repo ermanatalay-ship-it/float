@@ -1,55 +1,45 @@
-import { escapeHtml } from './util.js';
-
 const socket = io();
+const container = document.getElementById('message-container');
+const input = document.getElementById('message-input');
 
-const board = document.getElementById("board");
-const form = document.getElementById("composer");
-const input = document.getElementById("messageInput");
+function createMessageElement(text) {
+    const div = document.createElement('div');
+    div.classList.add('message');
+    div.textContent = text;
 
-// Mesajları ekrana yerleştirmek için düşey yığın mantığı.
-// Her yeni mesaj için rastgele yatay oynama + süre veriyoruz.
-function createBubble({ id, text, ts }) {
-  const el = document.createElement("div");
-  el.className = "message";
-  el.dataset.id = id;
-  el.dataset.ts = ts;
-  el.style.setProperty("--duration", `${9 + Math.random() * 6}s`);
+    // Yatay konumu rastgele ama üst üste binmeyi azaltacak
+    const maxWidth = container.clientWidth - 150;
+    div.style.left = Math.random() * maxWidth + 'px';
+    div.style.bottom = '0px';
 
-  const shift = Math.floor(Math.random() * 40) - 20; // -20..20 px
-  el.style.marginLeft = `${shift}px`;
+    container.appendChild(div);
 
-  el.innerHTML = escapeHtml(text);
-  board.appendChild(el);
+    // Animasyonu başlat hemen
+    requestAnimationFrame(() => {
+        div.style.transform = `translateY(-${container.clientHeight}px)`;
+    });
 
-  // Yeniden akışa girince sınıf ekleyelim (anim başlasın)
-  requestAnimationFrame(() => el.classList.add("show"));
+    // 20 saniye sonra opacity ile kaybol
+    setTimeout(() => {
+        div.style.opacity = 0;
+    }, 20000);
 
-  // Animasyon bitince DOM'dan temizle
-  el.addEventListener("animationend", () => {
-    el.remove();
-  });
+    // 22 saniye sonra DOM'dan sil
+    setTimeout(() => {
+        container.removeChild(div);
+    }, 22000);
 }
 
-// Sunucu: son mesajları yolla
-socket.on("recent", (list) => {
-  // Son giren kişi ekranında da görünmesi için kısa aralıklarla sırayla ekle
-  let delay = 0;
-  list.forEach((m) => {
-    setTimeout(() => createBubble(m), delay);
-    delay += 300;
-  });
+// Enter ile mesaj gönderme
+input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && input.value.trim() !== '') {
+        const text = input.value.trim();
+        socket.emit('newMessage', text);
+        input.value = '';
+    }
 });
 
-// Yeni mesaj yayını
-socket.on("broadcast", (msg) => {
-  createBubble(msg);
-});
-
-// Form kontrolü
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const value = input.value.trim();
-  if (!value) return;
-  socket.emit("newMessage", value);
-  input.value = "";
+// Socket.io’dan gelen mesajları göster
+socket.on('newMessage', (text) => {
+    createMessageElement(text);
 });
