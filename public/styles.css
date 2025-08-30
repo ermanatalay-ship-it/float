@@ -15,8 +15,23 @@ h1 {
 #message-container {
     position: relative;
     width: 100%;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 80px);
     overflow: hidden;
+}
+
+#input-wrapper {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+#message-input {
+    width: 80%;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
 }
 
 .message {
