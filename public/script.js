@@ -39,12 +39,12 @@ input.addEventListener('keydown', (e) => {
     }
 });
 
-// Dinle: 'broadcast' eventi ile yeni mesajlar
+// Yeni gelen mesajlar
 socket.on('broadcast', (message) => {
     createMessageElement(message.text);
 });
 
-// Dinle: 'recent' eventi ile geçmiş mesajlar (isteğe bağlı)
+// Aktif (görünen) mesajlar sayfa açılır açılmaz gösterilsin
 socket.on('recent', (messages) => {
     messages.forEach(msg => createMessageElement(msg.text));
 });
