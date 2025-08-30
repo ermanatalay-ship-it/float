@@ -1,0 +1,20 @@
+{
+  "name": "realtime-floating-messages",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Basit gerçek zamanlı mesaj akışı: ziyaretçiler yazı girer, ekranın üstüne doğru yavaşça kayarak kaybolur.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4"
+  }
+}
