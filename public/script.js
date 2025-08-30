@@ -39,7 +39,12 @@ input.addEventListener('keydown', (e) => {
     }
 });
 
-// Socket.io’dan gelen mesajları göster
-socket.on('newMessage', (text) => {
-    createMessageElement(text);
+// --- FIXED: Listen for 'broadcast' instead of 'newMessage'
+socket.on('broadcast', (message) => {
+    createMessageElement(message.text);
+});
+
+// --- OPTIONAL: Show recent messages when page loads
+socket.on('recent', (messages) => {
+    messages.forEach(msg => createMessageElement(msg.text));
 });
