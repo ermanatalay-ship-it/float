@@ -50,29 +50,6 @@ h1 {
 /* Mobile responsive styles */
 @media (max-width: 600px) {
     body {
-        font-size: 16px;
-    }
-    #message-container {
-        height: calc(100vh - 120px);
-    }
-    #input-wrapper {
-        bottom: 0;
-        padding-bottom: 15px;
-    }
-    #message-input {
-        width: 95%;
-        font-size: 18px;
-        padding: 13px 18px;
-    }
-    .message {
-        font-size: 18px;
-        padding: 12px 18px;
-        max-width: 80vw;
-        word-break: break-word;
-    }
-}
-@media (max-width: 600px) {
-    body {
         font-size: 18px;
     }
     h1 {
