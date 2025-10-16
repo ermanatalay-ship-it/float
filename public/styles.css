@@ -1,6 +1,8 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #e0f7fa;
+    background-image: url('https://www.toptal.com/designers/subtlepatterns/uploads/leaves.png');
+    background-repeat: repeat;
     overflow: hidden;
     margin: 0;
     padding: 0;
